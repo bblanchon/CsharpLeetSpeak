@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interop\CorMetaDataDispenserExClass.cs" />
+    <Compile Include="Interop\CorMetaDataDispenser.cs" />
     <Compile Include="Interop\IMetaDataDispenserEx.cs" />
     <Compile Include="Interop\IMetaDataImport.cs" />
     <Compile Include="LeetSpeakTranslator.cs" />
