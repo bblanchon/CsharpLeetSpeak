@@ -5,7 +5,8 @@ namespace LeetSpeak.Interop
     using System;
     using System.Runtime.InteropServices;
 
-    [ComImport, Guid("7DAC8207-D3AE-4C75-9B67-92801A497D44"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [ComImport, Guid("7DAC8207-D3AE-4C75-9B67-92801A497D44")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IMetaDataImport
     {
         void CloseEnum(IntPtr hEnum);

@@ -12,13 +12,12 @@
 
         public MetaDataReader(string location)
         {
-            var dispenser = new CorMetaDataDispenser();
-            var dispenserEx = (IMetaDataDispenser)dispenser;
-
+            var dispenser = new IMetaDataDispenser();
+           
             var metaDataImportGuid = typeof(IMetaDataImport).GUID;
 
             object rawScope;
-            var hr = dispenserEx.OpenScope(location, 0, ref metaDataImportGuid, out rawScope);
+            var hr = dispenser.OpenScope(location, 0, ref metaDataImportGuid, out rawScope);
 
             if (hr != 0)
             {
