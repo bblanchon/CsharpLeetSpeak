@@ -34,11 +34,13 @@
 
         string GetUserString(uint id)
         {
-            var buffer = new char[256];
             uint length;
-            metaDataImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
+            metaDataImport.GetUserString(id, null, 0, out length);
 
-            return new string(buffer, 0, (int)length);
+            var buffer = new char[length];
+            metaDataImport.GetUserString(id, buffer, length, out length);
+
+            return new string(buffer);
         }
 
         IEnumerable<uint> EnumerateUserStringIds()
