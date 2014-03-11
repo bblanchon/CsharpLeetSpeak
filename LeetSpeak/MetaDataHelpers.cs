@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using LeetSpeak.Interop;
 
@@ -10,15 +11,17 @@
         public static IEnumerable<string> EnumerateUserStrings(string location)
         {
             var mdImport = GetMetaDataImport(location);
-                      
-            foreach(var id in EnumerateUserStringIds(mdImport))
-            {
-                var buffer = new char[256];
-                uint length;
-                mdImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
 
-                yield return new string(buffer, 0, (int)length);
-            }
+            return EnumerateUserStringIds(mdImport).Select(id => GetUserString(mdImport, id));
+        }
+
+        static string GetUserString(IMetaDataImport mdImport, uint id)
+        {
+            var buffer = new char[256];
+            uint length;
+            mdImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
+
+            return new string(buffer, 0, (int)length);
         }
 
         static IEnumerable<uint> EnumerateUserStringIds(IMetaDataImport mdImport)
