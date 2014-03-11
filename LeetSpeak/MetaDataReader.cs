@@ -44,16 +44,19 @@
         IEnumerable<uint> EnumerateUserStringIds()
         {
             var hEnum = IntPtr.Zero;
-            var ids = new uint[100];
+            var buffer = new uint[16];
             uint count;
 
-            metaDataImport.EnumUserStrings(ref hEnum, ids, 100, out count);
-
+            metaDataImport.EnumUserStrings(ref hEnum, buffer, (uint)buffer.Length, out count);
+            
             try
             {
-                for (int i = 0; i < count; i++)
+                while (count > 0)
                 {
-                    yield return ids[i];
+                    for (var i = 0; i < count; i++)
+                        yield return buffer[i];
+
+                    metaDataImport.EnumUserStrings(ref hEnum, buffer, (uint)buffer.Length, out count);
                 }
             }
             finally
