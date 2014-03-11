@@ -6,41 +6,11 @@
     using System.Runtime.InteropServices;
     using LeetSpeak.Interop;
 
-    static class MetaDataHelpers
+    class MetaDataHelpers
     {
-        public static IEnumerable<string> EnumerateUserStrings(string location)
-        {
-            var mdImport = GetMetaDataImport(location);
+        IMetaDataImport metaDataImport;
 
-            return EnumerateUserStringIds(mdImport).Select(id => GetUserString(mdImport, id));
-        }
-
-        static string GetUserString(IMetaDataImport mdImport, uint id)
-        {
-            var buffer = new char[256];
-            uint length;
-            mdImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
-
-            return new string(buffer, 0, (int)length);
-        }
-
-        static IEnumerable<uint> EnumerateUserStringIds(IMetaDataImport mdImport)
-        {
-            var hEnum = IntPtr.Zero;
-            var ids = new uint[100];
-            uint count;
-
-            mdImport.EnumUserStrings(ref hEnum, ids, 100, out count);
-
-            for (int i = 0; i < count; i++)
-            {
-                yield return ids[i];
-            }
-
-            mdImport.CloseEnum(hEnum);
-        }
-
-        static IMetaDataImport GetMetaDataImport(string location)
+        public MetaDataHelpers(string location)
         {
             var dispenser = new CorMetaDataDispenser();
             var dispenserEx = (IMetaDataDispenserEx)dispenser;
@@ -55,7 +25,42 @@
                 Marshal.ThrowExceptionForHR((int)hr);
             }
 
-            return (IMetaDataImport)rawScope;
+            metaDataImport = (IMetaDataImport)rawScope;
+        }
+
+        public IEnumerable<string> EnumerateUserStrings()
+        {
+            return EnumerateUserStringIds().Select(GetUserString);
+        }
+
+        string GetUserString(uint id)
+        {
+            var buffer = new char[256];
+            uint length;
+            metaDataImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
+
+            return new string(buffer, 0, (int)length);
+        }
+
+        IEnumerable<uint> EnumerateUserStringIds()
+        {
+            var hEnum = IntPtr.Zero;
+            var ids = new uint[100];
+            uint count;
+
+            metaDataImport.EnumUserStrings(ref hEnum, ids, 100, out count);
+
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    yield return ids[i];
+                }
+            }
+            finally
+            {
+                metaDataImport.CloseEnum(hEnum);
+            }
         }
     }
 }
