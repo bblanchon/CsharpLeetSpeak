@@ -13,7 +13,7 @@
         public MetaDataReader(string location)
         {
             var dispenser = new CorMetaDataDispenser();
-            var dispenserEx = (IMetaDataDispenserEx)dispenser;
+            var dispenserEx = (IMetaDataDispenser)dispenser;
 
             var metaDataImportGuid = typeof(IMetaDataImport).GUID;
 
