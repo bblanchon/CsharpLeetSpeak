@@ -32,7 +32,7 @@ namespace LeetSpeak
 
         static IEnumerable<string> EnumerateInternedStrings(Assembly assembly)
         {
-            var metaDataReader = new MetaDataHelpers(assembly.Location);
+            var metaDataReader = new MetaDataReader(assembly.Location);
             return metaDataReader.EnumerateUserStrings().Where(x => string.IsInterned(x) != null);
         }
 

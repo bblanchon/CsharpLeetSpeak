@@ -6,11 +6,11 @@
     using System.Runtime.InteropServices;
     using LeetSpeak.Interop;
 
-    class MetaDataHelpers
+    class MetaDataReader
     {
-        IMetaDataImport metaDataImport;
+        readonly IMetaDataImport metaDataImport;
 
-        public MetaDataHelpers(string location)
+        public MetaDataReader(string location)
         {
             var dispenser = new CorMetaDataDispenser();
             var dispenserEx = (IMetaDataDispenserEx)dispenser;
