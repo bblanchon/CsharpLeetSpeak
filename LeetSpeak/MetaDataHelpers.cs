@@ -10,19 +10,28 @@
         public static IEnumerable<string> EnumerateUserStrings(string location)
         {
             var mdImport = GetMetaDataImport(location);
+                      
+            foreach(var id in EnumerateUserStringIds(mdImport))
+            {
+                var buffer = new char[256];
+                uint length;
+                mdImport.GetUserString(id, buffer, (uint)(buffer.Length - 1), out length);
 
+                yield return new string(buffer, 0, (int)length);
+            }
+        }
+
+        static IEnumerable<uint> EnumerateUserStringIds(IMetaDataImport mdImport)
+        {
             var hEnum = IntPtr.Zero;
             var ids = new uint[100];
             uint count;
+
             mdImport.EnumUserStrings(ref hEnum, ids, 100, out count);
 
             for (int i = 0; i < count; i++)
             {
-                var buffer = new char[256];
-                uint length;
-                mdImport.GetUserString(ids[i], buffer, (uint)(buffer.Length - 1), out length);
-
-                yield return new string(buffer, 0, (int)length);
+                yield return ids[i];
             }
 
             mdImport.CloseEnum(hEnum);
