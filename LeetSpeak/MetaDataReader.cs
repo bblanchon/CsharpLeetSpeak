@@ -12,16 +12,21 @@
 
         public MetaDataReader(string location)
         {
+            metaDataImport = GetDataImport(location);
+        }
+
+        static IMetaDataImport GetDataImport(string location)
+        {
             var dispenser = new IMetaDataDispenser();
-           
+
             var metaDataImportGuid = typeof(IMetaDataImport).GUID;
 
             object scope;
-            var hr = dispenser.OpenScope(location, 0, ref metaDataImportGuid, out scope);
 
+            var hr = dispenser.OpenScope(location, 0, ref metaDataImportGuid, out scope);
             AssertHresultIsZero(hr);
 
-            metaDataImport = (IMetaDataImport)scope;
+            return (IMetaDataImport)scope;
         }
 
         public IEnumerable<string> EnumerateUserStrings()

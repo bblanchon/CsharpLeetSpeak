@@ -6,7 +6,7 @@ namespace ConsoleApplication
 
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             LeetSpeakTranslator.LeetifyAssembly(Assembly.GetExecutingAssembly());
 
