@@ -60,19 +60,20 @@
         {
             var hEnum = IntPtr.Zero;
             var buffer = new uint[16];
-            uint count;
 
-            metaDataImport.EnumUserStrings(ref hEnum, buffer, (uint)buffer.Length, out count);
-            
             try
             {
-                while (count > 0)
+                uint count;
+
+                do
                 {
+                    var hr = metaDataImport.EnumUserStrings(ref hEnum, buffer, (uint)buffer.Length, out count);
+                    AssertHresultIsZero(hr);
+
                     for (var i = 0; i < count; i++)
                         yield return buffer[i];
-
-                    metaDataImport.EnumUserStrings(ref hEnum, buffer, (uint)buffer.Length, out count);
                 }
+                while (count > 0);
             }
             finally
             {
