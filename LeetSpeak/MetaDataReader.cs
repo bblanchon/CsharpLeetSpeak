@@ -16,15 +16,12 @@
            
             var metaDataImportGuid = typeof(IMetaDataImport).GUID;
 
-            object rawScope;
-            var hr = dispenser.OpenScope(location, 0, ref metaDataImportGuid, out rawScope);
+            object scope;
+            var hr = dispenser.OpenScope(location, 0, ref metaDataImportGuid, out scope);
 
-            if (hr != 0)
-            {
-                Marshal.ThrowExceptionForHR((int)hr);
-            }
+            AssertHresultIsZero(hr);
 
-            metaDataImport = (IMetaDataImport)rawScope;
+            metaDataImport = (IMetaDataImport)scope;
         }
 
         public IEnumerable<string> EnumerateUserStrings()
@@ -34,11 +31,27 @@
 
         string GetUserString(uint id)
         {
-            uint length;
-            metaDataImport.GetUserString(id, null, 0, out length);
+            var length = GetUserStringLength(id);
 
+            return GetUserStringContent(id, length);
+        }
+
+        uint GetUserStringLength(uint id)
+        {
+            uint length;
+
+            var hr = metaDataImport.GetUserString(id, null, 0, out length);
+            AssertHresultIsZero(hr);
+
+            return length;
+        }
+
+        string GetUserStringContent(uint id, uint length)
+        {
             var buffer = new char[length];
-            metaDataImport.GetUserString(id, buffer, length, out length);
+
+            var hr = metaDataImport.GetUserString(id, buffer, length, out length);
+            AssertHresultIsZero(hr);
 
             return new string(buffer);
         }
@@ -64,6 +77,14 @@
             finally
             {
                 metaDataImport.CloseEnum(hEnum);
+            }
+        }
+
+        static void AssertHresultIsZero(uint hr)
+        {
+            if (hr != 0)
+            {
+                Marshal.ThrowExceptionForHR((int)hr);
             }
         }
     }
